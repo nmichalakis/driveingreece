@@ -1,0 +1,88 @@
+<?php
+
+
+
+/**
+ * Implements hook_views_api().
+ */
+function bootstrap_grid_views_api() {
+  return array(
+    'api' => 3.0,
+  );
+}
+
+/**
+ * Implements hook_theme()
+ * @return array
+ */
+function bootstrap_grid_theme() {
+  return array(
+    'bootstrap_grid_view' => array(
+      'variables' => array('form' => NULL),
+    ),
+    'bootstrap_grid_preview' => array(
+      'variables' => array('device', 'view_cols', 'view_offset' => null, 'record_cols', 'record_offset'  => null),
+      'template' => 'bootstrap-grid-preview',
+    ),
+  );
+}
+
+function template_preprocess_bootstrap_grid_preview(&$variables) {
+  drupal_add_css(drupal_get_path('module', 'bootstrap_grid') . '/bootstrap_grid.css');
+
+  $device = $variables['device'];
+
+  if($device == 'xs') {
+    $variables['class'] = 'mobile';
+  }
+  if($device == 'sm') {
+    $variables['class'] = 'tablet';
+  }
+  if($device  == 'md') {
+    $variables['class'] = 'medium';
+  }
+  if($device == 'lg') {
+    $variables['class'] = 'large';
+  }
+  $variables['records'] = round(12 / ($variables['record_cols'] +  $variables['record_offset']));
+}
+
+
+/**
+ * @param $variables
+ */
+function template_preprocess_bootstrap_grid_view(&$variables) {
+  $view = $variables['view'];
+  $rows = $variables['rows'];
+  $options = $variables['options'];
+  $resolutions = array(
+    'xs', 'sm', 'md', 'lg'
+  );
+
+  foreach($resolutions as $resolution) {
+    if($options['view-' . $resolution . '-offset'] != 0) {
+      $variables['view_attributes']['class'][] = 'col-' . $resolution . '-' . $options['view-' . $resolution . '-offset'];
+    }
+
+    $variables['view_attributes']['class'][] = 'col-' . $resolution . '-' . $options['view-' . $resolution . '-columns'];
+  }
+
+
+
+  $records = array();
+  foreach ($rows as $delta => $row) {
+    $attributes = array();
+    foreach($resolutions as $resolution) {
+      $attributes['class'][] = 'col-' . $resolution . '-' . $options['record-' . $resolution . '-columns'];
+    }
+    $attributes['class'][] = 'grid-item';
+
+    $records[] = array(
+      'attributes' => $attributes,
+      'record' => $row,
+    );
+  }
+
+  $variables['records'] = $records;
+}
+

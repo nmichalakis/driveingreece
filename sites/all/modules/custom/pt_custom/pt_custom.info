@@ -1,0 +1,8 @@
+name = Custom Module Devs
+description = PT Custom custom module ovverides.
+package = Pixelthis
+core = 7.x
+
+stylesheets[screen][] = pt_custom.css
+
+scripts[] = pt_custom.js

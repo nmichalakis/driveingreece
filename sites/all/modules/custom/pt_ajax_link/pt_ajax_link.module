@@ -1,0 +1,103 @@
+<?php
+/*
+ * Implement hook_menu
+ */
+
+function pt_ajax_link_menu(){
+	$items['ajaxnode']=array(
+		'title' => 'Get Ajax Content',
+		'page callback'=>'get_ajax_content',
+		'access callback' => TRUE,
+		'type' => MENU_CALLBACK,
+	);
+
+  $items['ajax_booking_form']=array(
+    'title' => 'Get Ajax Booking Content',
+    'page callback'=>'get_ajax_booking_content',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+	return $items;
+}
+
+/**
+* Access callback
+*/
+function get_ajax_booking_content($form,$form_state){
+  watchdog('pt_ajax_link', 'i was called from ajax');
+  $bgimg ='test';
+  $body_field ='more testas';
+  drupal_json_output(array('img'=>$bgimg,'body'=>$body_field));
+}
+
+
+/**
+* Access callback
+*/
+function get_simple_ajax_content(){
+  if(arg(1)){
+    $arg1 = arg(1);
+
+    watchdog('pt_ajax_link', 'Ajax Booking Form arg1: '.$arg1.' form data '.$form['fox_color']);
+ }
+}
+
+/**
+* Access callback
+*/
+function get_ajax_content(){
+  if(arg(1)){
+    $arg1 = arg(1);
+    $node = node_load($arg1);
+    $body_field = field_get_items('node', $node, 'body');
+    $node_title = $node->title;
+    $bgimg = '';
+    if($arg1 == 16){
+      $field = field_get_items('node', $node, 'field_image');
+    }else{
+      $front_node = node_load('14');
+      $field = field_get_items('node', $front_node, 'field_image');
+    }
+
+    $bgimg = array();
+    foreach ($field as $key => $value) {
+          $bgimg[] = file_create_url($value['uri']);
+        }
+
+    $contact_nodes = array();
+    $contact_nodes[] = '11';
+    if (in_array($node->nid, $contact_nodes)){
+          $cblock = module_invoke('pt_custom', 'block_view', 'contact-drivemein');
+          $cblock_html =  render($cblock['content']);
+    }else{
+          $cblock_html = '';
+    }
+  }else{
+    $ajax_content ='<h1>nothing found sorry</h1>';
+  }
+    drupal_json_output(array('body'=>$body_field,'nid'=>$node->nid,'img' => $bgimg,'cblock_html'=> $cblock_html,'ntitle' => $node_title));
+	exit;
+}
+
+
+
+function pt_ajax_link_theme() {
+   return array(
+      'pt_ajax_link_javascript' => array(
+         'arguments' => array(),
+      ),
+   );
+}
+
+function pt_ajax_link_init() {
+  theme('pt_ajax_link_javascript');
+}
+
+function theme_pt_ajax_link_javascript() {
+ drupal_add_js(drupal_get_path('module', 'pt_ajax_link') . '/pt_ajax_link.js');
+}
+
+
+
+

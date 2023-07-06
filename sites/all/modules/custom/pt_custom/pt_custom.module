@@ -1,0 +1,314 @@
+<?php
+/**
+ * @file
+ * Basic module form and drupal backoffice customization.
+ *
+ */
+
+
+function pt_custom_user_view($account, $view_mode, $langcode) {
+  //dpm($account);
+  //dpm($view_mode);
+  //dpm($langcode);
+  if ($view_mode == 'view_grid_display'){
+    //dpm($account);
+    $raw_path = $account->content['field_img_logo'][0]['#path']['path'];
+    $alias_path = drupal_get_path_alias($raw_path);
+    //dpm($alias_path);
+  }
+}
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function pt_custom_form_alter(&$form, &$form_state, $form_id) {
+
+  // dpm($form_id);
+  if ($form_id == 'webform_client_form_127'){
+
+   $arg1 = arg(1);
+   $user = user_load($arg1);
+   if (isset($user->field_company_name['en'][0]['safe_value'])){
+    $form['#prefix'] = '<div class="well well-info"><h4 class="block-title"><span class="glyphicon glyphicon-envelope"></span> Contact: <strong>'.$user->field_company_name['en'][0]['safe_value'].'</strong></h4>';
+    $form['#suffix'] = '</div>';
+  }
+
+   $form['#submit'][] = 'notify_admin_email';
+
+  }
+
+  if ($form_id == 'comment_node_reviews_form'){
+
+    //Federation Commenting Node
+    if ($form['#node']->nid == '50'){
+
+      $form['field_agency_ref']['#required'] = false;
+      $form['field_agency_ref']['#access'] = false;
+
+      $form['field_group_association_ref']['#required'] = false;
+      $form['field_group_association_ref']['#access'] = false;
+
+    }
+
+    //Groups Renting Business Members Commenting Node
+    if ($form['#node']->nid == '47'){
+
+      $form['field_group_association_ref']['#access'] = false;
+      $form['field_agency_ref']['und']['#required']= true;
+
+    }
+
+    //Groups Renting Business Members Commenting Node
+    if ($form['#node']->nid == '46'){
+
+      $form['field_agency_ref']['#access'] = false;
+
+      $form['field_group_association_ref']['und']['#required'] = true;
+
+    }
+
+  }
+
+  if ($form_id == 'user_profile_form'){
+    // dpm($form);
+    global $user;
+    if (user_has_role(6,$user)){
+      //drupal_set_message('he is');
+      //dpm($form['account']['roles']);
+      unset($form['account']['roles']['#options'][3]);
+      unset($form['account']['roles']['#options'][6]);
+      $form['account']['roles']['#access'] = TRUE;
+    }
+
+    $form['#validate'][] = '_check_user_has_only_one_extra_role';
+
+  }
+
+  //Node reviews comment form
+  if ($form_id == 'comment_node_reviews_form'){
+    //dpm($form);
+    $form['author']['homepage']['#access'] = FALSE;
+
+  }
+
+  //User Profile
+  if ($form_id == 'user_profile_form'){
+    //dpm($form);
+    $form['contact']['#prefix'] = '<div style="display:none;"';
+    $form['contact']['#suffix'] = '</div>';
+    $form['locale']['#prefix'] = '<div style="display:none;"';
+    $form['locale']['#suffix'] = '</div>';
+  }
+  //Views Exposed Form
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-agencies-page'){
+    //dpm($form);
+    if (isset($form['field_company_name_value'])){
+      $form['#prefix'] = '<div id="map-icon"></div>';
+    }
+
+  $form['field_company_name_value']['#size'] = 15;
+
+
+  }
+
+  if ($form_id == 'simplenews_block_form_16'){
+    //dpm($form);
+    $form['submit']['#prefix'] = '<div class="col-md-2 submit-newsletter">';
+    $form['submit']['#suffix'] = '</div>';
+  }
+  //Personal Contact Form
+  if ($form_id == 'views_contact_form_contact_form'){
+    //dpm($form);
+    $form['subject']['#title'] = t('Telephone');
+    $form['actions']['submit']['#value'] = t('Send a quote');
+    $arg0 = arg(0);
+    $arg1 = arg(1);
+
+    if ($arg0 == 'user' && ctype_digit($arg1)){
+      $c_user = user_load((int)$arg1);
+      global $language;
+      if($language->language == 'el'){
+          $form['#prefix'] = '<h3><i class="fa fa-envelope"></i> '.$c_user->name.'</h3>';
+      }else{
+          $form['#prefix'] = '<h3><i class="fa fa-envelope"></i> '.$c_user->name.'</h3>';
+
+      }
+    }
+
+  }
+}
+
+function _check_user_has_only_one_extra_role($form,&$form_state){
+  // dpm($form);
+  // dpm($form);
+  if ($form_state['values']['roles'][4] != 0 && $form_state['values']['roles'][7] != 0){
+    form_set_error('account][roles',t('Ένας χρήστης δεν μπορεί να είναι ρόλους - δικαιώματα ως agency και ως group association. Παρακαλώ επιλέξτε έναν μόνο ρόλο.'));
+  }
+}
+/**
+ * Implements hook_block_info().
+ */
+function pt_custom_block_info() {
+  $blocks = array();
+  $blocks['website-logo'] = array(
+    'info' => t('Website Logo'),
+  );
+  $blocks['header-icons'] = array(
+    'info' => t('Header Icons'),
+  );
+  $blocks['footer-credits'] = array(
+    'info' => t('Footer Credits Left'),
+  );
+  $blocks['footer-credits-more'] = array(
+    'info' => t('Footer Credits Right'),
+  );
+  $blocks['map-agencies'] = array(
+    'info' => t('Map Agencies'),
+  );
+  return $blocks;
+}
+/**
+ * Implements hook_block_view().
+ */
+function pt_custom_block_view($delta='') {
+  $block = array();
+
+  switch($delta) {
+    case 'header-icons' :
+      $block['content'] = _render_header_icons();
+      break;
+    case 'website-logo' :
+      $block['content'] = _render_website_logo();
+      break;
+    case 'footer-credits' :
+      $block['content'] = _render_footer_credits();
+      break;
+    case 'footer-credits-more' :
+      $block['content'] = _render_footer_credits_more();
+      break;
+    case 'map-agencies' :
+      $block['content'] = _render_map_agencies();
+      break;
+
+  }
+
+  return $block;
+}
+
+function _render_map_agencies(){
+  return  views_embed_view('agencies','attachment_1');
+}
+function _render_website_logo(){
+  global $base_url;
+
+
+  global $theme_key;
+  $logo_url = theme_get_setting('logo_path', $theme_key);
+
+  $logopath = file_create_url($logo_url);
+
+
+  $module_path = drupal_get_path('module', 'pt_custom');
+
+  //Website Site Name var
+  $raw_site_slogan = variable_get('site_slogan');
+  //$site_slogan = explode('|',$raw_site_slogan);
+  if (isset($site_slogan[0])){
+    $site_slogan_0 = $site_slogan[0];
+  }else{
+    $site_slogan_0 = '';
+  }
+
+  if (isset($site_slogan[1])){
+    $site_slogan_1 = $site_slogan[1];
+  }else{
+    $site_slogan_1 = '';
+  }
+
+  return '<div class="logo-wrapper"><div class="logo-graphic logo-block"><a href="'.$base_url.'"><img src="'.$logopath.'"/></a></div><div class="site-slogan logo-block">'.$site_slogan_0.'<br/>'.$site_slogan_1.'</div></div>';
+}
+
+
+function _render_header_icons(){
+  global $base_url;
+  $module_path = drupal_get_path('module', 'pt_custom');
+  $mpath = $base_url.'/'.$module_path.'/images/';
+  $user_login_path = $base_url.'/user';
+  $calendar_path = $base_url.'/calendar-node-field-date/month';
+
+  if (user_is_logged_in()){
+      $date_item = '<a href="'.$calendar_path.'"><img src="'.$mpath.'calendar.png" alt="calendar icon" title="calendar icon" /></a>';
+  }else{
+      $date_item = '<a href="'.$user_login_path.'?destination='.$calendar_path.'"><img src="'.$mpath.'calendar.png" alt="calendar icon" title="calendar icon" /></a>';
+  }
+
+  $html = '<ul class="header-icons">';
+  $html .= '<li><a href="http://facebook.com" target="_blank"><img src="'.$mpath.'facebook.png" alt="facebook icon" title="facebook icon" /></a></li>';
+  $html .= '<li><span class="icon-date">'.date('d').'</span>'.$date_item.'</li>';
+
+$lang_block = module_invoke('locale', 'block_view', 'language');
+  $lang_list = strip_tags(render($lang_block['content']),'<a><li>');
+ $html .= $lang_list;
+  return $html;
+}
+
+
+function _render_footer_credits(){
+  $weblink = '<div class="important-links">'.t('<a href="@important-files">Important Files</a>.', array('@important-files' => 'important-files')).'</div>';
+  $html = '&copy; 2013 - '.date('Y').' All rights reserved '.$weblink;
+  return $html;
+}
+
+function _render_footer_credits_more(){
+  $html = 'designed by: <a href="http://whitecover.gr">white cover</a> | powered by: <a href="http://pixelthis.gr">pixelthis.gr</a>';
+  return $html;
+}
+
+// function pt_custom_entity_view($entity, $type, $view_mode, $langcode) {
+//   dpm($type);
+//   dpm($view_mode);
+//   dpm($entity);
+// }
+
+function pt_custom_views_pre_view(&$view){
+  if($view->name == 'agencies' && $view->current_display == 'block'){
+    $pager_options = $view->display_handler->get_option('pager');
+    $view->display['default']->handler->options['pager']['options']['id'] = pager_id_generator();
+    $view->display_handler->set_option('pager', $pager_options);
+  }
+}
+
+function pager_id_generator(){
+  static $pager_id;
+  if(!isset($pager_id)){
+    $pager_id = 2; //Not sure if this is necessary but I included it anyway (saw it in some example code)...
+  }
+  else{
+      $pager_id++;
+  }
+  // watchdog(__FUNCTION__, '<pre>' . print_r($pager_id, true) . '</pre>');
+
+  return $pager_id;
+}
+
+
+function notify_admin_email(&$form, &$form_state){
+
+  $arg1 = arg(1);
+  $user = user_load($arg1);
+
+  $from = $form_state['values']['submitted'][1];
+  $to = $user->mail;
+  $subject = 'Email Submission: '. $form_state['values']['submitted'][2];
+
+  $message = $form_state['values']['submitted'][4];
+
+  if (isset($form_state['values']['submitted'][3])){
+    $message .= '<p>tel: '.$form_state['values']['submitted'][3].'</p>';
+  }
+
+  simple_mail_send($from, $to, $subject, $message);
+  watchdog(__FUNCTION__, '<pre>' . print_r([$from,$to,$subject,$message], true) . '</pre>');
+
+}

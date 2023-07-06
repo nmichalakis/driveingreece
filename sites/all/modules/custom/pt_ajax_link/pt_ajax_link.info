@@ -1,0 +1,4 @@
+name = "Ajax Link Frontpage Block reload"
+description = "Ajax Region Loader with Minipanels and Sections"
+core = 7.x
+stylesheets[all][] =  pt_ajax_link.css

@@ -1,0 +1,88 @@
+/*=====================================================
+=            Bootstrap 2.3.2 Media Queries            =
+=====================================================*/
+@media only screen and (max-width : 1200px) {
+  #edit-field-group-location-tid-i18n-wrapper{
+    display: none;
+  }
+}
+
+@media only screen and (max-width : 979px) {
+
+}
+
+@media only screen and (max-width : 767px) {
+.view-georegions .views-field-name-i18n .region-wball, .view-georegions .views-field-name-i18n a .prefooter-graphic-cycle{
+  display: none;
+}
+#block-block-1 h2.block-title{
+  font-size: 22px;
+}
+.view .views-row .ui-accordion-content{
+  padding: 5px;
+}
+#block-views-georegions-block .view-header h2{
+  font-size: 20px;
+}
+.prefooter-wrapper .block{
+  float: none;
+}
+.view-prefooter p{
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+#simplenews-block-form-16 label{
+  position: relative;
+}
+#simplenews-block-form-16 div{
+  padding: 0;
+}
+
+#simplenews-block-form-16 .col-md-5{
+  margin-bottom: 15px;
+}
+#block-simplenews-16 h2.block-title .prefooter-title,
+.view-prefooter .views-field-title .prefooter-title{
+  font-size: 18px !important;
+}
+
+.view-georegions .views-field-name-i18n .region-nolink, 
+.view-georegions .views-field-name-i18n a{
+  font-size: 18px;
+}
+}
+
+@media only screen and (max-width : 480px) {
+
+}
+
+@media only screen and (max-width : 320px) {
+
+}
+
+
+@media only screen and (max-width: 991px) {
+  .navbar-default ul li{
+    display:block;
+    float: none;
+    border: none;
+  }
+  .navbar-default ul li a{
+    text-align: right;
+    padding-right: 0;
+    padding-top: 10px;
+  }
+  .navbar-default ul li.last, .navbar-default ul li.last a{
+    padding-right: 8px ;
+  }
+  .navbar-wrapper{
+    padding-bottom: 0;
+    padding-right: 15px;
+  }
+
+  #block-views-exp-agencies-page{
+    display: none;
+  }
+
+}

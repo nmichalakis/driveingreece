@@ -1,0 +1,7 @@
+name = Bootstrap grid
+description = Bootstrap responsive grid.
+core = 7.x
+package = Views
+
+files[] = bootstrap_grid.views.inc
+files[] = bootstrap_grid_plugins_style_grid.inc
