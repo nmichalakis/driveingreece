@@ -650,9 +650,9 @@ h1.page-header,
     color: #fff;
     left: 0;
     padding: 7px;
-    position: absolute;
     text-transform: uppercase;
     top: 0;
+    width: 100%;
 }
 #simplenews-block-form-16 .form-group {
 
