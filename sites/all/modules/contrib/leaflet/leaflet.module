@@ -53,7 +53,7 @@ function leaflet_libraries_info() {
     'vendor url' => 'http://leafletjs.com/',
     'download url' => 'http://cdn.leafletjs.com/leaflet/v1.0.2/leaflet.zip',
     'version arguments' => array(
-      'file' => 'leaflet.js',
+      'file' => 'leaflet-src.js',
       // Handle patterns like  version: "1.0.2+4bbb16c"
       'pattern' => '/version[=: ]*[\'"]([\d+\.]+[\-a-z\.\d]*)[\'"]/',
     ),

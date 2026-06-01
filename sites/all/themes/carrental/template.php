@@ -6,7 +6,7 @@
  */
 function carrental_preprocess_html(&$variables) {
   global $site_name;
-	drupal_add_css('http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=latin,greek', array('type' => 'external'));
+  drupal_add_css('https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=latin,greek', array('type' => 'external'));
 
   $cpath = current_path();
   $params = drupal_get_query_parameters();

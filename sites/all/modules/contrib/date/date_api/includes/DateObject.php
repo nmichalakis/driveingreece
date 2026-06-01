@@ -18,6 +18,9 @@
 class DateObject extends DateTime {
   public $granularity = array();
   public $errors = array();
+  public $timeOnly = FALSE;
+  public $dateOnly = FALSE;
+  public $originalTime = NULL;
   protected static $allgranularity = array(
     'year',
     'month',
