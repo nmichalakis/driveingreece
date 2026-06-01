@@ -102,6 +102,10 @@ class date_sql_handler {
    */
   public $offset_field = NULL;
 
+  public $granularity = NULL;
+
+  public $placeholders = array();
+
   /**
    * The object constuctor.
    */

@@ -313,3 +313,17 @@ function notify_admin_email(&$form, &$form_state){
   watchdog(__FUNCTION__, '<pre>' . print_r([$from,$to,$subject,$message], true) . '</pre>');
 
 }
+
+/**
+ * Implements hook_libraries_info_alter().
+ */
+function pt_custom_libraries_info_alter(&$libraries) {
+  if (isset($libraries['leaflet'])) {
+    $libraries['leaflet']['version'] = '1.4.0';
+    $libraries['leaflet']['version callback'] = 'pt_custom_leaflet_version';
+  }
+}
+
+function pt_custom_leaflet_version() {
+  return '1.4.0';
+}
