@@ -1,17 +1,12 @@
 name = Font Awesome
-description = Iconic font designed for use with Twitter Bootstrap.
+description = The most popular icon set and toolkit on the web.
 core = 7.x
-php = 5
 
 dependencies[] = libraries (>=7.x-2.0)
+configure = admin/config/content/fontawesome
 
-files[] = fontawesome.install
-files[] = fontawesome.module
-
-files[] = tests/fontawesome.test
-
-; Information added by Drupal.org packaging script on 2018-07-16
-version = "7.x-2.9"
+; Information added by Drupal.org packaging script on 2020-07-02
+version = "7.x-3.13"
 core = "7.x"
 project = "fontawesome"
-datestamp = "1531780740"
+datestamp = "1593707997"

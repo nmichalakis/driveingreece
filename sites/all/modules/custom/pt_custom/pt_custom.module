@@ -248,7 +248,8 @@ function _render_header_icons(){
   $html .= '<li><span class="icon-date">'.date('d').'</span>'.$date_item.'</li>';
 
 $lang_block = module_invoke('locale', 'block_view', 'language');
-  $lang_list = strip_tags(render($lang_block['content']),'<a><li>');
+  $lang_content = $lang_block['content'] ?? '';
+  $lang_list = strip_tags(render($lang_content),'<a><li>');
  $html .= $lang_list;
   return $html;
 }

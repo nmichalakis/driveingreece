@@ -56,7 +56,6 @@ function leaflet_libraries_info() {
       'file' => 'leaflet.js',
       // Handle patterns like  version: "1.0.2+4bbb16c"
       'pattern' => '/version[=: ]*[\'"]([\d+\.]+[\-a-z\.\d]*)[\'"]/',
-      'lines' => 1200,
     ),
     'files' => array(
       'js' => array(
