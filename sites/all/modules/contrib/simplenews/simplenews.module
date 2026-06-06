@@ -1473,7 +1473,7 @@ function simplenews_get_subscriptions_by_list($tid) {
  *
  * @ingroup subscription
  */
-function simplenews_subscription_update($conditions = array(), $data) {
+function simplenews_subscription_update($conditions = array(), $data = array()) {
   $query = db_update('simplenews_subscription');
   foreach ($conditions as $key => $condition) {
     $query->condition($key, $condition);

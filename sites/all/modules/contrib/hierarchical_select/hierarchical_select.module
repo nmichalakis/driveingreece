@@ -1385,7 +1385,7 @@ function _hs_process_render_flat_select($hierarchy, $dropbox, $config) {
  * @return
  *   A single item id or a flat array of item ids.
  */
-function _hierarchical_select_process_calculate_return_value($hierarchy, $dropbox = FALSE, $module, $params, $save_lineage) {
+function _hierarchical_select_process_calculate_return_value($hierarchy, $dropbox = FALSE, $module = NULL, $params = array(), $save_lineage = 0) {
   if (!$dropbox) {
     $return_value = _hierarchical_select_hierarchy_validate($hierarchy->lineage, $module, $params);
     // If the save_lineage setting is disabled, keep only the deepest item.
